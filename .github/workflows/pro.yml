@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: DockerHub
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -32,12 +35,14 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./Dockerfile
+          platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
           push: true
   deploy:
     runs-on: ubuntu-latest
+    environment: DockerHub
     needs: docker
     steps:
       - name: Deploy
@@ -47,7 +52,32 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker stop info-manager
-            docker rm info-manager
-            docker pull xidp/info-manager:latest
-            docker run -d --name info-manager --restart always -p 9528:9528 -v /opt/xidp/:/opt/xidp/ xidp/info-manager:latest
+            mkdir -p /app/info-manager
+            cd /app/info-manager
+            
+            # 创建 docker-compose.yml
+            cat > docker-compose.yml << 'EOF'
+            version: '3.8'
+            services:
+              app:
+                image: xidp/info-manager:latest
+                container_name: info-manager
+                ports:
+                  - "9528:9528"
+                environment:
+                  - TZ=Asia/Shanghai
+                volumes:
+                  - /opt/xidp/conf/config.yml:/opt/xidp/conf/config.yml:ro
+                  - /var/log/info-manager/logs:/opt/xidp/logs
+                restart: unless-stopped
+                networks:
+                  - xidp-network
+            networks:
+              xidp-network:
+                driver: bridge
+            EOF
+            
+            # 停止旧容器并启动新容器
+            docker compose down || true
+            docker compose pull
+            docker compose up -d
