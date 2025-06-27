@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    image: xidp/info-manager:latest
+    container_name: info-manager
+    ports:
+      - "9528:9528"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /opt/xidp/conf/config.yml:/opt/xidp/conf/config.yml:ro
+      - /var/log/info-manager/logs:/opt/xidp/logs
+    restart: unless-stopped
+    networks:
+      - xidp-network
+
+networks:
+  xidp-network:
+    driver: bridge
