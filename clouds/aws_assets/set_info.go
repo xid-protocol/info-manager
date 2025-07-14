@@ -78,7 +78,7 @@ func SetAWSSecGroupInfo(secGroups *map[string][]*ec2.DescribeSecurityGroupsOutpu
 
 		if exists {
 			logx.Infof("aws secgroup %s exists, need to modify", groupID)
-			info := protocols.NewInfo(groupID, "aws-secgroup")
+			info := protocols.NewInfo(groupID, "aws-secgroupid")
 			metadata := protocols.NewMetadata("modify", "/info/aws/secgroup", "application/json")
 			xidRecord := protocols.NewXID(&info, &metadata, (*secGroups)[groupID])
 			logx.Infof("xid: %v", xidRecord)
@@ -91,7 +91,7 @@ func SetAWSSecGroupInfo(secGroups *map[string][]*ec2.DescribeSecurityGroupsOutpu
 			continue
 		}
 
-		info := protocols.NewInfo(groupID, "aws-secgroup")
+		info := protocols.NewInfo(groupID, "aws-secgroupid")
 		metadata := protocols.NewMetadata("create", "/info/aws/secgroup", "application/json")
 		xidRecord := protocols.NewXID(&info, &metadata, (*secGroups)[groupID])
 		logx.Infof("xid: %v", xidRecord)
