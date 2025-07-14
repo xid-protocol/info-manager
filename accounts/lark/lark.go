@@ -51,9 +51,9 @@ func setLarkInfo(usersByEmail *map[string]gjson.Result) {
 
 		if exists {
 			logx.Infof("larksuite %s exists, need to modify", email)
-			info := protocols.NewInfo(email, "email", false)
+			info := protocols.NewInfo(email, "email")
 			metadata := protocols.NewMetadata("modify", "/info/larksuite", "application/json")
-			xidRecord := protocols.NewXID(info, metadata, (*usersByEmail)[email].Value())
+			xidRecord := protocols.NewXID(&info, &metadata, (*usersByEmail)[email].Value())
 			logx.Infof("xid: %v", xidRecord)
 			// 插入MongoDB
 			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, xidRecord)
@@ -65,9 +65,9 @@ func setLarkInfo(usersByEmail *map[string]gjson.Result) {
 			continue
 		}
 
-		info := protocols.NewInfo(email, "email", false)
+		info := protocols.NewInfo(email, "email")
 		metadata := protocols.NewMetadata("create", "/info/larksuite", "application/json")
-		xidRecord := protocols.NewXID(info, metadata, (*usersByEmail)[email].Value())
+		xidRecord := protocols.NewXID(&info, &metadata, (*usersByEmail)[email].Value())
 		logx.Infof("xid: %v", xidRecord)
 		// 插入MongoDB
 		err = repo.Insert(ctx, xidRecord)

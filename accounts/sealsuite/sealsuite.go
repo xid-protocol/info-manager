@@ -31,9 +31,9 @@ func setSealsuiteInfo(usersByEmail map[string]gjson.Result) {
 
 		if exists {
 			logx.Infof("sealsuite %s exists, need to modify", email)
-			info := protocols.NewInfo(email, "email", false)
+			info := protocols.NewInfo(email, "email")
 			metadata := protocols.NewMetadata("modify", "/info/sealsuite", "application/json")
-			xidRecord := protocols.NewXID(info, metadata, usersByEmail[email].Value())
+			xidRecord := protocols.NewXID(&info, &metadata, usersByEmail[email].Value())
 
 			logx.Infof("xid: %v", xidRecord)
 			// 插入MongoDB
@@ -46,9 +46,9 @@ func setSealsuiteInfo(usersByEmail map[string]gjson.Result) {
 			continue
 		}
 
-		info := protocols.NewInfo(email, "email", false)
+		info := protocols.NewInfo(email, "email")
 		metadata := protocols.NewMetadata("create", "/info/sealsuite", "application/json")
-		xidRecord := protocols.NewXID(info, metadata, usersByEmail[email].Value())
+		xidRecord := protocols.NewXID(&info, &metadata, usersByEmail[email].Value())
 
 		logx.Infof("xid: %v", xidRecord)
 		// 插入MongoDB

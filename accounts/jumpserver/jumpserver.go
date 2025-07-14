@@ -27,9 +27,9 @@ func setJumpserverInfo(userInfo gjson.Result) {
 			return
 		}
 		if exists {
-			info := protocols.NewInfo(email, "email", false)
+			info := protocols.NewInfo(email, "email")
 			metadata := protocols.NewMetadata("modify", "/info/jumpserver", "application/json")
-			xidRecord := protocols.NewXID(info, metadata, userInfo.Value())
+			xidRecord := protocols.NewXID(&info, &metadata, userInfo.Value())
 			logx.Infof("xid: %v", xidRecord)
 			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, xidRecord)
 			if err != nil {
@@ -40,9 +40,9 @@ func setJumpserverInfo(userInfo gjson.Result) {
 			return
 		}
 
-		info := protocols.NewInfo(email, "email", false)
+		info := protocols.NewInfo(email, "email")
 		metadata := protocols.NewMetadata("create", "/info/jumpserver", "application/json")
-		xidRecord := protocols.NewXID(info, metadata, userInfo.Value())
+		xidRecord := protocols.NewXID(&info, &metadata, userInfo.Value())
 		err = repo.Insert(ctx, xidRecord)
 		if err != nil {
 			logx.Errorf("insert jumpserver %s failed: %v", email, err)

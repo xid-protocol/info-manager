@@ -26,9 +26,9 @@ func SetAWSEc2Info(instances *map[string]*ec2.Instance) {
 			logx.Infof("aws ec2 %s exists, need to modify", instanceId)
 
 			//创建XID
-			info := protocols.NewInfo(instanceId, "aws-instanceid", false)
+			info := protocols.NewInfo(instanceId, "aws-instanceid")
 			metadata := protocols.NewMetadata("modify", "/info/aws/instance", "application/json")
-			xidRecord := protocols.NewXID(info, metadata, (*instances)[instanceId])
+			xidRecord := protocols.NewXID(&info, &metadata, (*instances)[instanceId])
 			logx.Infof("xid: %v", xidRecord)
 			// 插入MongoDB
 			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, xidRecord)
@@ -40,9 +40,9 @@ func SetAWSEc2Info(instances *map[string]*ec2.Instance) {
 			continue
 		}
 
-		info := protocols.NewInfo(instanceId, "aws-instanceid", false)
+		info := protocols.NewInfo(instanceId, "aws-instanceid")
 		metadata := protocols.NewMetadata("create", "/info/aws/instance", "application/json")
-		xidRecord := protocols.NewXID(info, metadata, (*instances)[instanceId])
+		xidRecord := protocols.NewXID(&info, &metadata, (*instances)[instanceId])
 		logx.Infof("xid: %v", xidRecord)
 		// 插入MongoDB
 		err = repo.Insert(ctx, xidRecord)
@@ -70,7 +70,7 @@ func SetAWSSecGroupInfo(secGroups *map[string][]*ec2.DescribeSecurityGroupsOutpu
 		}
 
 		xid := protocols.GenerateXid(groupID)
-		exists, err := repo.CheckXidInfoExists(ctx, xid, "/info/aws/security-group")
+		exists, err := repo.CheckXidInfoExists(ctx, xid, "/info/aws/secgroup")
 		if err != nil {
 			logx.Errorf("check aws secgroup failed: %v", err)
 			continue
@@ -78,9 +78,9 @@ func SetAWSSecGroupInfo(secGroups *map[string][]*ec2.DescribeSecurityGroupsOutpu
 
 		if exists {
 			logx.Infof("aws secgroup %s exists, need to modify", groupID)
-			info := protocols.NewInfo(groupID, "aws-secgroup", false)
-			metadata := protocols.NewMetadata("modify", "/info/aws/security-group", "application/json")
-			xidRecord := protocols.NewXID(info, metadata, (*secGroups)[groupID])
+			info := protocols.NewInfo(groupID, "aws-secgroup")
+			metadata := protocols.NewMetadata("modify", "/info/aws/secgroup", "application/json")
+			xidRecord := protocols.NewXID(&info, &metadata, (*secGroups)[groupID])
 			logx.Infof("xid: %v", xidRecord)
 			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, xidRecord)
 			if err != nil {
@@ -91,9 +91,9 @@ func SetAWSSecGroupInfo(secGroups *map[string][]*ec2.DescribeSecurityGroupsOutpu
 			continue
 		}
 
-		info := protocols.NewInfo(groupID, "aws-secgroup", false)
-		metadata := protocols.NewMetadata("create", "/info/aws/security-group", "application/json")
-		xidRecord := protocols.NewXID(info, metadata, (*secGroups)[groupID])
+		info := protocols.NewInfo(groupID, "aws-secgroup")
+		metadata := protocols.NewMetadata("create", "/info/aws/secgroup", "application/json")
+		xidRecord := protocols.NewXID(&info, &metadata, (*secGroups)[groupID])
 		logx.Infof("xid: %v", xidRecord)
 		err = repo.Insert(ctx, xidRecord)
 		if err != nil {
