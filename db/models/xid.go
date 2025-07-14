@@ -9,18 +9,18 @@ package models
 //		ContentType: "application/json",
 //
 
-type Metadata struct {
-	CreatedAt   int64  `json:"createdAt" bson:"createdAt"`
-	CardId      string `json:"cardId" bson:"cardId"`
-	Operation   string `json:"operation" bson:"operation"`
-	Path        string `json:"path" bson:"path"`
-	ContentType string `json:"contentType" bson:"contentType"`
-}
+// type Metadata struct {
+// 	CreatedAt   int64  `json:"createdAt" bson:"createdAt"`
+// 	CardId      string `json:"cardId" bson:"cardId"`
+// 	Operation   string `json:"operation" bson:"operation"`
+// 	Path        string `json:"path" bson:"path"`
+// 	ContentType string `json:"contentType" bson:"contentType"`
+// }
 
-type XID struct {
-	Name     string      `json:"name" bson:"name"`
-	Xid      string      `json:"xid" bson:"xid"`
-	Version  string      `json:"version" bson:"version"`
-	Metadata Metadata    `json:"metadata" bson:"metadata"`
-	Payload  interface{} `json:"payload" bson:"payload"`
-}
+// type XID struct {
+// 	Name     string      `json:"name" bson:"name"`
+// 	Xid      string      `json:"xid" bson:"xid"`
+// 	Version  string      `json:"version" bson:"version"`
+// 	Metadata Metadata    `json:"metadata" bson:"metadata"`
+// 	Payload  interface{} `json:"payload" bson:"payload"`
+// }

@@ -9,7 +9,7 @@ import (
 	"github.com/colin-404/logx"
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/viper"
-	"github.com/xid-protocol/xidp/common"
+	"github.com/xid-protocol/info-manager/common"
 	"gopkg.in/twindagger/httpsig.v1"
 )
 

@@ -3,7 +3,7 @@ package sealsuite
 import (
 	"github.com/colin-404/logx"
 	"github.com/tidwall/gjson"
-	"github.com/xid-protocol/xidp/common"
+	"github.com/xid-protocol/info-manager/common"
 )
 
 // Department 部门结构体

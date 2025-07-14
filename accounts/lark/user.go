@@ -7,7 +7,7 @@ import (
 
 	"github.com/colin-404/logx"
 	"github.com/tidwall/gjson"
-	"github.com/xid-protocol/xidp/common"
+	"github.com/xid-protocol/info-manager/common"
 )
 
 const LarkURL = "https://open.larksuite.com"

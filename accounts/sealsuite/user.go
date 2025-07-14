@@ -3,7 +3,7 @@ package sealsuite
 import (
 	"github.com/colin-404/logx"
 	"github.com/tidwall/gjson"
-	"github.com/xid-protocol/xidp/common"
+	"github.com/xid-protocol/info-manager/common"
 )
 
 // getAllUsersForDepartments 为所有部门获取用户
@@ -29,7 +29,11 @@ func (ss *sealsuite) getUsersByDepartment(departmentID string) *gjson.Result {
 		"Authorization": ss.token,
 	}
 
-	resp := common.DoHttp("GET", url, nil, headers)
+	resp, err := common.DoHttp("GET", url, nil, headers)
+	if err != nil {
+		logx.Errorf("get users by department failed: %v", err)
+		return nil
+	}
 	responseBody := resp.String()
 
 	// 解析用户数据

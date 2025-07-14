@@ -5,9 +5,8 @@ import (
 
 	"github.com/colin-404/logx"
 	"github.com/tidwall/gjson"
-	"github.com/xid-protocol/xidp/common"
-	"github.com/xid-protocol/xidp/db/models"
-	"github.com/xid-protocol/xidp/db/repositories"
+	"github.com/xid-protocol/info-manager/db/repositories"
+	"github.com/xid-protocol/xidp/protocols"
 )
 
 // type jumpserver struct {
@@ -19,7 +18,7 @@ func setJumpserverInfo(userInfo gjson.Result) {
 	repo := repositories.NewXidInfoRepository()
 	ctx := context.Background()
 	if email := userInfo.Get("email").String(); email != "" {
-		xid := common.GenerateXid(email)
+		xid := protocols.GenerateXid(email)
 		logx.Infof("xid: %v", xid)
 		//检查是否存在
 		exists, err := repo.CheckXidInfoExists(ctx, xid, "/info/jumpserver")
@@ -28,21 +27,11 @@ func setJumpserverInfo(userInfo gjson.Result) {
 			return
 		}
 		if exists {
-			xidRecord := models.XID{
-				Name:    "xid-protocol",
-				Xid:     xid,
-				Payload: userInfo.Value(),
-				Version: "0.1.1",
-				Metadata: models.Metadata{
-					CardId:      common.GenerateCardId(),
-					CreatedAt:   common.GetTimestamp(),
-					Operation:   "modify",
-					Path:        "/info/jumpserver",
-					ContentType: "application/json",
-				},
-			}
+			info := protocols.NewInfo(email, "email", false)
+			metadata := protocols.NewMetadata("modify", "/info/jumpserver", "application/json")
+			xidRecord := protocols.NewXID(info, metadata, userInfo.Value())
 			logx.Infof("xid: %v", xidRecord)
-			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, &xidRecord)
+			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, xidRecord)
 			if err != nil {
 				logx.Errorf("modify jumpserver %s failed: %v", email, err)
 			} else {
@@ -51,20 +40,10 @@ func setJumpserverInfo(userInfo gjson.Result) {
 			return
 		}
 
-		xidRecord := models.XID{
-			Name:    "xid-protocol",
-			Xid:     xid,
-			Payload: userInfo.Value(),
-			Version: "0.1.1",
-			Metadata: models.Metadata{
-				CardId:      common.GenerateCardId(),
-				CreatedAt:   common.GetTimestamp(),
-				Operation:   "create",
-				Path:        "/info/jumpserver",
-				ContentType: "application/json",
-			},
-		}
-		err = repo.Insert(ctx, &xidRecord)
+		info := protocols.NewInfo(email, "email", false)
+		metadata := protocols.NewMetadata("create", "/info/jumpserver", "application/json")
+		xidRecord := protocols.NewXID(info, metadata, userInfo.Value())
+		err = repo.Insert(ctx, xidRecord)
 		if err != nil {
 			logx.Errorf("insert jumpserver %s failed: %v", email, err)
 		} else {

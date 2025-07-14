@@ -1,10 +1,13 @@
 package accounts
 
-import "github.com/xid-protocol/xidp/accounts/lark"
+import (
+	"github.com/xid-protocol/info-manager/accounts/lark"
+	"github.com/xid-protocol/info-manager/accounts/sealsuite"
+)
 
 func AccountMonitor() {
 
-	// sealsuite.RunSealsuite()
+	sealsuite.RunSealsuite()
 
 	// jumpserver.RunJumpServer()
 	lark.RunLark()

@@ -2,18 +2,17 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/colin-404/logx"
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"github.com/xid-protocol/xidp/accounts"
-	"github.com/xid-protocol/xidp/biz"
-	"github.com/xid-protocol/xidp/db"
+	"github.com/xid-protocol/info-manager/accounts"
+
+	"github.com/xid-protocol/info-manager/clouds"
+	"github.com/xid-protocol/info-manager/db"
 )
 
 var sig = make(chan os.Signal, 1)
@@ -85,6 +84,7 @@ func main() {
 	go func() {
 		for {
 			accounts.AccountMonitor()
+			clouds.CloudMonitor()
 			time.Sleep(time.Hour)
 
 		}
@@ -93,26 +93,5 @@ func main() {
 	// go ServerStart()
 	//go sealsuite.SealsuiteAcountInit()
 	// go accounts.AccountMonitor()
-	<-sig
-}
-
-func ServerStart() {
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
-	biz.RegisterRouter(router)
-
-	//获取端口配置，如果获取不到，则退出
-	port := viper.GetInt("Server.port")
-	if port == 0 {
-		logx.Errorf("server.port is not set")
-		os.Exit(1)
-	}
-
-	logx.Infof("Listening and serving on %d", port)
-	err := router.Run(fmt.Sprintf(":%d", port))
-	if err != nil {
-		logx.Errorf("SRV_ERROR %s", err.Error())
-	}
-
 	<-sig
 }

@@ -6,9 +6,9 @@ import (
 	"github.com/colin-404/logx"
 	"github.com/spf13/viper"
 	"github.com/tidwall/gjson"
-	"github.com/xid-protocol/xidp/common"
-	"github.com/xid-protocol/xidp/db/models"
-	"github.com/xid-protocol/xidp/db/repositories"
+	"github.com/xid-protocol/info-manager/common"
+	"github.com/xid-protocol/info-manager/db/repositories"
+	"github.com/xid-protocol/xidp/protocols"
 )
 
 func getToken() string {
@@ -42,7 +42,7 @@ func setLarkInfo(usersByEmail *map[string]gjson.Result) {
 	for email := range *usersByEmail {
 
 		// info := map[string]interface{}{"email": email, "type": "user_email"}
-		xid := common.GenerateXid(email)
+		xid := protocols.GenerateXid(email)
 		exists, err := repo.CheckXidInfoExists(ctx, xid, "/info/larksuite")
 		if err != nil {
 			logx.Errorf("check larksuite failed: %v", err)
@@ -51,22 +51,12 @@ func setLarkInfo(usersByEmail *map[string]gjson.Result) {
 
 		if exists {
 			logx.Infof("larksuite %s exists, need to modify", email)
-			xidRecord := models.XID{
-				Name:    "xid-protocol",
-				Xid:     xid,
-				Version: "0.1.1",
-				Payload: (*usersByEmail)[email].Value(),
-				Metadata: models.Metadata{
-					CardId:      common.GenerateCardId(),
-					CreatedAt:   common.GetTimestamp(),
-					Operation:   "modify",
-					Path:        "/info/larksuite",
-					ContentType: "application/json",
-				},
-			}
+			info := protocols.NewInfo(email, "email", false)
+			metadata := protocols.NewMetadata("modify", "/info/larksuite", "application/json")
+			xidRecord := protocols.NewXID(info, metadata, (*usersByEmail)[email].Value())
 			logx.Infof("xid: %v", xidRecord)
 			// 插入MongoDB
-			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, &xidRecord)
+			err = repo.UpdateXidInfo(ctx, xidRecord.Xid, xidRecord.Metadata.Path, xidRecord)
 			if err != nil {
 				logx.Errorf("modify larksuite %s failed: %v", email, err)
 			} else {
@@ -75,22 +65,12 @@ func setLarkInfo(usersByEmail *map[string]gjson.Result) {
 			continue
 		}
 
-		xidRecord := models.XID{
-			Name:    "xid-protocol",
-			Xid:     common.GenerateXid(email),
-			Version: "0.1.1",
-			Payload: (*usersByEmail)[email].Value(),
-			Metadata: models.Metadata{
-				CardId:      common.GenerateCardId(),
-				CreatedAt:   common.GetTimestamp(),
-				Operation:   "create",
-				Path:        "/info/larksuite",
-				ContentType: "application/json",
-			},
-		}
+		info := protocols.NewInfo(email, "email", false)
+		metadata := protocols.NewMetadata("create", "/info/larksuite", "application/json")
+		xidRecord := protocols.NewXID(info, metadata, (*usersByEmail)[email].Value())
 		logx.Infof("xid: %v", xidRecord)
 		// 插入MongoDB
-		err = repo.Insert(ctx, &xidRecord)
+		err = repo.Insert(ctx, xidRecord)
 		if err != nil {
 			logx.Errorf("insert larksuite %s failed: %v", email, err)
 		} else {

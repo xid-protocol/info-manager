@@ -1,15 +1,18 @@
-module github.com/xid-protocol/xidp
+module github.com/xid-protocol/info-manager
 
 go 1.24.4
 
 require (
+	github.com/aws/aws-sdk-go v1.55.7
 	github.com/colin-404/logx v0.0.7
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-fed/httpsig v1.1.0
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/uuid v1.6.0
+	github.com/rs/xid v1.6.0
 	github.com/spf13/viper v1.20.1
 	github.com/tidwall/gjson v1.18.0
+	github.com/xid-protocol/xidp v0.1.5
 	go.mongodb.org/mongo-driver v1.17.4
 	gopkg.in/twindagger/httpsig.v1 v1.2.0
 )
@@ -29,6 +32,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
@@ -38,7 +42,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
-	github.com/rs/xid v1.6.0 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.12.0 // indirect

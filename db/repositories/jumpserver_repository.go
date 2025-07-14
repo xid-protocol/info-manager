@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/colin-404/logx"
-	"github.com/xid-protocol/xidp/db"
-	"github.com/xid-protocol/xidp/db/models"
+	"github.com/xid-protocol/info-manager/db"
+	"github.com/xid-protocol/info-manager/db/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
